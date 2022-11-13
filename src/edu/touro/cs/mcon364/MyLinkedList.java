@@ -4,20 +4,19 @@ package edu.touro.cs.mcon364;
 import java.util.*;
 
 public class MyLinkedList implements List<String> {
-    private static class Node
-    {
+    private static class Node {
         private String data;
         private Node next;
 
-        public Node() {}
+        public Node() {
+        }
 
-        public Node (String s) {
+        public Node(String s) {
             data = s;
         }
     }
 
     private final Node head = new Node();
-    private Node end = head;
     private int size = 0;
 
     @Override
@@ -30,11 +29,21 @@ public class MyLinkedList implements List<String> {
         return size == 0;
     }
 
+    // Since we have no reference to prev, we need to get the prev to do many operations.
+    private Node findPreceding(int index) {
+        Node curr = head;
+        // `i` is the index of the node we actually want, i.e. when we want index 0 we return index -1.
+        for (int i = 0; i < index; i++) {
+            curr = curr.next;
+        }
+
+        return curr;
+    }
+
     @Override
     public boolean add(String s) {
-        Node n = new Node(s), oldEnd = end;
-        end = n;
-        oldEnd.next = n;
+        Node oldEnd = findPreceding(size);
+        oldEnd.next = new Node(s);
         size++;
         return true;
     }
@@ -58,31 +67,23 @@ public class MyLinkedList implements List<String> {
     public void clear() {
         size = 0;
         head.next = null;
-        end = head;
     }
 
-    // Since we have no reference to prev, we need to get the prev to do many operations.
-    private Node findPreceding(int index) {
+    private void outOfBoundsCheck(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(String.format("Index %d out of bounds for length %d", index, size));
         }
-
-        Node curr = head;
-        // `i` is the index of the node we actually want, i.e. when we want index 0 we return index -1.
-        for (int i = 0; i < index; i++) {
-            curr = curr.next;
-        }
-
-        return curr;
     }
 
     @Override
     public String get(int index) {
+        outOfBoundsCheck(index);
         return findPreceding(index).next.data;
     }
 
     @Override
     public String set(int index, String element) {
+        outOfBoundsCheck(index);
         Node n = findPreceding(index).next;
         String oldData = n.data;
         n.data = element;
