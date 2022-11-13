@@ -41,16 +41,11 @@ public class MyLinkedList implements List<String> {
 
     @Override
     public boolean remove(Object o) {
-//        if (o != null && !(o instanceof String)) {
-//            return false;
-//        }
-//
-//        String target = (String) o;
         Node curr = head, prev;
         while (curr.next != null) {
             prev = curr;
             curr = curr.next;
-            if (Objects.equals(o, curr.data)) { //(o == null && curr.data == null) || curr.data.equals(target)
+            if (Objects.equals(o, curr.data)) {
                 prev.next = curr.next;
                 size--;
                 return true;
